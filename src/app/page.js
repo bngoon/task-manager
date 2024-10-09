@@ -93,7 +93,7 @@ export default function TaskManager() {
       </ul>
 
       {/* Add Task Form */}
-      <div className="mt-6 flex items-center">
+      <div className="mt-6 flex items-center text-black">
         <input
           type="text"
           value={newTaskTitle}
