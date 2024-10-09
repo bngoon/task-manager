@@ -12,8 +12,8 @@ export default function TaskManager() {
 
   // Mock data to use when Supabase connection fails
   const mockTasks = [
-    { id: 1, title: 'Mock Task 1', completed: false },
-    { id: 2, title: 'Mock Task 2', completed: true },
+    { id: 1, title: 'Mock Task 1', completed: false, color: 'black' },
+    { id: 2, title: 'Mock Task 2', completed: true, color: 'black' },
   ];
 
   // Fetch tasks from Supabase or use mock data
@@ -136,13 +136,13 @@ export default function TaskManager() {
   };
 
   return (
-    <div className="p-6 max-w-lg mx-auto">
-      <h1 className="text-3xl font-bold mb-4">Task Manager</h1>
+    <div className="p-6 max-w-lg mx-auto ">
+      <h1 className="text-3xl font-bold mb-4 text-black">Task Manager</h1>
       {loading && <p>Loading...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
       {/* Task List */}
-      <ul className="space-y-4">
+      <ul className="space-y-4 text-black">
         {tasks.map((task) => (
           <TaskItem key={task.id} task={task} editTask={editTask} deleteTask={deleteTask} />
         ))}
