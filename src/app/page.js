@@ -10,18 +10,35 @@ export default function TaskManager() {
   const [error, setError] = useState(null);
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
-  // Fetch tasks from Supabase
+  // Mock data to use when Supabase connection fails
+  const mockTasks = [
+    { id: 1, title: 'Mock Task 1', completed: false },
+    { id: 2, title: 'Mock Task 2', completed: true },
+  ];
+
+  // Fetch tasks from Supabase or use mock data
   const fetchTasks = async () => {
     setLoading(true);
     setError(null);
-    const { data, error } = await supabase.from('tasks').select('*');
-    if (error) {
-      setError('Error fetching tasks. Please try again.');
-      console.error('Error fetching tasks:', error);
+    if (supabase) {
+      try {
+        const { data, error } = await supabase.from('tasks').select('*');
+        if (error) {
+          throw error;
+        }
+        setTasks(data);
+      } catch (error) {
+        setError('Error fetching tasks. Using mock data instead.');
+        console.error('Error fetching tasks:', error);
+        setTasks(mockTasks);
+      } finally {
+        setLoading(false);
+      }
     } else {
-      setTasks(data);
+      console.warn('Using mock data as Supabase is not available.');
+      setTasks(mockTasks);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -36,15 +53,30 @@ export default function TaskManager() {
     }
     setLoading(true);
     setError(null);
-    const { data, error } = await supabase.from('tasks').insert([{ title: newTaskTitle, completed: false }]);
-    if (error) {
-      setError('Error adding task. Please try again.');
-      console.error('Error adding task:', error);
+    if (supabase) {
+      try {
+        const { data, error } = await supabase.from('tasks').insert([{ title: newTaskTitle, completed: false }]);
+        if (error) {
+          throw error;
+        }
+        if (data) {
+          setTasks((prevTasks) => [...prevTasks, ...data]);
+          setError(null);
+        }
+      } catch (error) {
+        setError('Error adding task. Please try again.');
+        console.error('Error adding task:', error);
+      } finally {
+        setLoading(false);
+      }
     } else {
-      setTasks((prevTasks) => [...prevTasks, ...data]);
-      setNewTaskTitle('');
+      // Mock task addition
+      const newTask = { id: tasks.length + 1, title: newTaskTitle, completed: false };
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+      setError(null);
+      setLoading(false);
     }
-    setLoading(false);
+    setNewTaskTitle('');
   };
 
   // Edit a task
@@ -55,28 +87,52 @@ export default function TaskManager() {
     }
     setLoading(true);
     setError(null);
-    const { error } = await supabase.from('tasks').update({ title: updatedTitle }).eq('id', taskId);
-    if (error) {
-      setError('Error editing task. Please try again.');
-      console.error('Error editing task:', error);
+    if (supabase) {
+      try {
+        const { error } = await supabase.from('tasks').update({ title: updatedTitle }).eq('id', taskId);
+        if (error) {
+          throw error;
+        }
+        setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId ? { ...task, title: updatedTitle } : task)));
+        setError(null);
+      } catch (error) {
+        setError('Error editing task. Please try again.');
+        console.error('Error editing task:', error);
+      } finally {
+        setLoading(false);
+      }
     } else {
+      // Mock task editing
       setTasks((prevTasks) => prevTasks.map((task) => (task.id === taskId ? { ...task, title: updatedTitle } : task)));
+      setError(null);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   // Delete a task
   const deleteTask = async (taskId) => {
     setLoading(true);
     setError(null);
-    const { error } = await supabase.from('tasks').delete().eq('id', taskId);
-    if (error) {
-      setError('Error deleting task. Please try again.');
-      console.error('Error deleting task:', error);
+    if (supabase) {
+      try {
+        const { error } = await supabase.from('tasks').delete().eq('id', taskId);
+        if (error) {
+          throw error;
+        }
+        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+        setError(null); // Clear error on successful deletion
+      } catch (error) {
+        setError('Error deleting task. Please try again.');
+        console.error('Error deleting task:', error);
+      } finally {
+        setLoading(false);
+      }
     } else {
+      // Mock task deletion
       setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+      setError(null);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
@@ -93,13 +149,13 @@ export default function TaskManager() {
       </ul>
 
       {/* Add Task Form */}
-      <div className="mt-6 flex items-center text-black">
+      <div className="mt-6 flex items-center">
         <input
           type="text"
           value={newTaskTitle}
           onChange={(e) => setNewTaskTitle(e.target.value)}
           placeholder="New task title..."
-          className="border p-2 flex-grow mr-4 rounded-md"
+          className="border p-2 flex-grow mr-4 rounded-md text-black"
         />
         <button
           onClick={addTask}

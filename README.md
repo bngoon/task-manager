@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Task Manager App
 
-## Getting Started
+This is a simple Task Manager web application built using Next.js, Supabase, and Tailwind CSS. The app allows users to add, edit, and delete tasks. This guide will help you set up the project locally.
 
-First, run the development server:
+# Features
+
+- **Full CRUD (Create, Read, Update, Delete) Operations**: Users can create new tasks, read task details, update existing tasks, and delete tasks.
+- **Next.js for UI**: Utilizes React with Next.js for the frontend.
+- **Supabase for Backend**: Uses Supabase as a backend to perform CRUD operations on tasks.
+- **Tailwind CSS for Styling**: Tailwind CSS is used for styling the app.
+
+# Prerequisites
+
+- Node.js installed (>= 14.x recommended)
+- Yarn or npm
+- Supabase account and API keys
+
+# Getting Started
+
+## 1. Clone the Repository
+
+First, clone the repository to your local machine:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/task-manager.git
+cd task-manager
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 2. Install Dependencies
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Install the necessary dependencies using Yarn or npm:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```bash
+# Using Yarn
+yarn install
 
-## Learn More
+# Using npm
+npm install
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 3. Set Up Supabase Credentials
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a `.env.local` file in the root directory and add the following:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
 
-## Deploy on Vercel
+Replace the placeholders with your Supabase project values.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 4. Run the App
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+To run the app locally:
+
+```bash
+# Using Yarn
+yarn dev
+
+# Using npm
+npm run dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000).
+
+# Using the App
+
+* Add tasks using the input field.
+* Edit tasks using the "Edit" button.
+* Delete tasks using the "Delete" button.
+* Mock data will be used if Supabase is unavailable.
+
+# Folder Structure
+
+* **src/utils/supabaseClient.js**: Supabase client setup.
+* **src/components/TaskItem.js**: Task item component.
+* **src/app/page.js**: Main app logic for managing tasks.
+
+# Troubleshooting
+
+* **Unauthorized Errors**: Ensure `.env.local` is correctly configured.
+* **Mock Data**: Displayed if Supabase fails.
+
+# Technologies Used
+
+* **Next.js**
+* **Supabase**
+* **Tailwind CSS**
+
+# License
+
+This project is open source and available under the [MIT License](LICENSE).
